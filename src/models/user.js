@@ -1,16 +1,13 @@
 import { DataTypes } from 'sequelize'
 import sequelize from './../db/postgres'
 
-const User = sequelize.define('User', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+const User = sequelize.define('user', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: true,
+    primaryKey: true
+
   },
   password: {
     type: DataTypes.STRING,
@@ -31,5 +28,7 @@ const User = sequelize.define('User', {
   }
 
 })
+
+User.belongsToMany(User, { as: 'following', through: 'followers', foreignKey: 'user', otherKey: 'follower', sourceKey: 'username', targetKey: 'username' })
 
 export default User
