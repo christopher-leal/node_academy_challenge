@@ -3,6 +3,6 @@ import usersRouter from './users'
 
 const router = Router()
 
-router.use('/users', usersRouter)
+router.use('/', usersRouter)
 
 export default router
