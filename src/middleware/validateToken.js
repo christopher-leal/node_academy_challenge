@@ -3,6 +3,12 @@ import logger from './../utils/logger'
 
 const validateToken = (req, res, next) => {
   const authorizationHeader = req.get('Authorization')
+  if (!authorizationHeader) {
+    return res.status(401).json({
+      success: false,
+      error: 'Missing token'
+    })
+  }
   const token = authorizationHeader.replace('Token ', '')
   try {
     const decoded = verifyToken(token)
