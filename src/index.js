@@ -16,7 +16,7 @@ app.use(morgan('tiny'))
 app.use(cors())
 app.use(helmet())
 
-app.use(routes)
+app.use('/api', routes)
 
 app.get('/', (req, res) => {
   res.json({
