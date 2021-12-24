@@ -75,6 +75,7 @@ const getCurrentUser = async (req, res) => {
         error: 'User not found'
       })
     }
+
     return res.json({
       success: true,
       user: {
@@ -82,7 +83,7 @@ const getCurrentUser = async (req, res) => {
         username: user.username,
         bio: user.bio,
         image: user.image,
-        token: req.get('Authorization')
+        token: req.user.token
       }
     })
   } catch (error) {
@@ -122,11 +123,11 @@ const updateUser = async (req, res) => {
     return res.json({
       success: true,
       user: {
-        email: user.email,
-        username: user.username,
-        bio: user.bio,
-        image: user.image,
-        token: req.get('Authorization')
+        email: updatedUser.email,
+        username: updatedUser.username,
+        bio: updatedUser.bio,
+        image: updatedUser.image,
+        token: req.user.token
       }
     })
   } catch (error) {
