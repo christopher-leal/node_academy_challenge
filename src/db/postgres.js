@@ -2,7 +2,12 @@ import { Sequelize } from 'sequelize'
 import logger from './../utils/logger'
 import config from 'config'
 
-const sequelize = new Sequelize(`postgres://${config.get('postgres.DB_USER')}:${config.get('postgres.DB_PASSWORD')}@${config.get('postgres.DB_HOST')}:${config.get('postgres.DB_PORT')}/${config.get('postgres.DB_DATABASE')}`)
+const sequelize = new Sequelize(config.get('postgres.DB_DATABASE'), config.get('postgres.DB_USER'), config.get('postgres.DB_PASSWORD'), {
+  host: config.get('postgres.DB_HOST'),
+  port: config.get('postgres.DB_PORT'),
+  dialect: 'postgres',
+  logging: false
+})
 
 export const connect = async () => {
   try {
