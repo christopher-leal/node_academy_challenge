@@ -1,3 +1,5 @@
 import slug from 'slug'
 
-export const slugString = string => slug(string)
+const slugString = string => slug(string)
+
+export default slugString

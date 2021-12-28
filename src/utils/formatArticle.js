@@ -1,6 +1,6 @@
 import { sanitizeTagsName } from './sanitizeTagsName'
 
-export const formatArticles = (data, username) => {
+const formatArticles = (data, username) => {
   if (Array.isArray(data)) {
     return data.map(article => formatArticle(article, username))
   }
@@ -25,3 +25,5 @@ const formatArticle = (article, username) => ({
   tagList: sanitizeTagsName(article)
 }
 )
+
+export default formatArticles
