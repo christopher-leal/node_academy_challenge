@@ -4,14 +4,14 @@ import logger from './../utils/logger'
 const getProfile = async (req, res) => {
   const { username } = req.params
   try {
-    const userToFollow = await User.findOne({ where: { username }, include: ['following'] })
+    const userToFollow = await User.findOne({ where: { username }, include: ['followers'] })
     if (!userToFollow) {
       return res.status(404).json({
         success: false,
         error: 'User not found'
       })
     }
-    const following = !!userToFollow.following.find((user) => user.username === req.user?.username)
+    const following = !!userToFollow.followers.find((user) => user.username === req.user?.username)
     const profile = {
       username: userToFollow.username,
       bio: userToFollow.bio,
@@ -34,7 +34,7 @@ const getProfile = async (req, res) => {
 const follow = async (req, res) => {
   const { username } = req.params
   try {
-    const userToFollow = await User.findOne({ where: { username }, include: ['following'] })
+    const userToFollow = await User.findOne({ where: { username }, include: ['followers'] })
     if (!userToFollow) {
       return res.status(404).json({
         success: false,
@@ -42,7 +42,7 @@ const follow = async (req, res) => {
       })
     }
     const user = await User.findOne({ where: { email: req.user.email } })
-    await userToFollow.addFollowing(user)
+    await userToFollow.addFollowers(user)
 
     const profile = {
       username: userToFollow.username,
@@ -66,7 +66,7 @@ const follow = async (req, res) => {
 const unfollow = async (req, res) => {
   const { username } = req.params
   try {
-    const userToFollow = await User.findOne({ where: { username }, include: ['following'] })
+    const userToFollow = await User.findOne({ where: { username }, include: ['followers'] })
     if (!userToFollow) {
       return res.status(404).json({
         success: false,
@@ -75,7 +75,7 @@ const unfollow = async (req, res) => {
     }
     const user = await User.findOne({ where: { email: req.user.email } })
 
-    await userToFollow.removeFollowing(user)
+    await userToFollow.removeFollowers(user)
 
     const profile = {
       username: userToFollow.username,
