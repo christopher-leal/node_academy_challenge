@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize'
 import sequelize from './../db/postgres'
 import Tag from './tag'
 import User from './user'
+import Comment from './comment'
 
 const Article = sequelize.define('Article', {
   slug: {
@@ -35,5 +36,6 @@ const Article = sequelize.define('Article', {
 
 Article.belongsTo(User, { foreignKey: 'author', targetKey: 'username' })
 Article.belongsToMany(Tag, { through: 'TagList' })
+Article.hasMany(Comment)
 
 export default Article
