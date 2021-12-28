@@ -7,12 +7,13 @@ import validateOptionalToken from './../middleware/validateOptionalToken'
 
 const router = Router()
 
-router.post('/:slug/comments', [
-  validateToken,
-  body('comment.body').notEmpty().withMessage('Body is required'),
-  validateFields
-], commentsController.createComment)
-router.get('/:slug/comments', [validateOptionalToken], commentsController.getCommentsFromArticle)
-router.delete('/:slug/comments/:id', [validateToken], commentsController.deleteComment)
+router
+  .post('/:slug/comments', [
+    validateToken,
+    body('comment.body').notEmpty().withMessage('Body is required'),
+    validateFields
+  ], commentsController.createComment)
+  .get('/:slug/comments', [validateOptionalToken], commentsController.getCommentsFromArticle)
+  .delete('/:slug/comments/:id', [validateToken], commentsController.deleteComment)
 
 export default router

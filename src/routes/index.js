@@ -3,12 +3,16 @@ import usersRouter from './users'
 import profilesRouter from './profiles'
 import articlesRouter from './articles'
 import commentsRouter from './comments'
+import tagsRouter from './tags'
 
 const router = Router()
 
-router.use('/', usersRouter)
-router.use('/profiles', profilesRouter)
-router.use('/articles', articlesRouter)
-router.use('/articles', commentsRouter)
+router
+  .use('/', usersRouter)
+  .use('/profiles', profilesRouter)
+  .use('/articles', articlesRouter)
+  .use('/articles', commentsRouter)
+  .use('/articles', commentsRouter)
+  .use('/tags', tagsRouter)
 
 export default router
