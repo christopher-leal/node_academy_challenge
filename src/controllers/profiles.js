@@ -8,7 +8,7 @@ const getProfile = async (req, res) => {
     if (!userToFollow) {
       return res.status(404).json({
         success: false,
-        error: 'User not found'
+        errors: { body: ['User not found'] }
       })
     }
     const following = !!userToFollow.followers.find((user) => user.username === req.user?.username)
@@ -23,10 +23,10 @@ const getProfile = async (req, res) => {
       profile
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -38,7 +38,8 @@ const follow = async (req, res) => {
     if (!userToFollow) {
       return res.status(404).json({
         success: false,
-        error: 'User not found'
+        errors: { body: ['User not found'] }
+
       })
     }
     const user = await User.findOne({ where: { email: req.user.email } })
@@ -55,10 +56,10 @@ const follow = async (req, res) => {
       profile
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -70,7 +71,7 @@ const unfollow = async (req, res) => {
     if (!userToFollow) {
       return res.status(404).json({
         success: false,
-        error: 'User not found'
+        errors: { body: ['User not found'] }
       })
     }
     const user = await User.findOne({ where: { email: req.user.email } })
@@ -89,10 +90,10 @@ const unfollow = async (req, res) => {
 
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }

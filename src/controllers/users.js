@@ -10,7 +10,7 @@ const login = async (req, res) => {
     if (!user || !decrypt(password, user.password)) {
       return res.status(401).json({
         success: false,
-        error: 'email or password doesn\'t match'
+        errors: { body: ['email or password doesn\'t match'] }
       })
     }
     const token = generateToken({
@@ -28,10 +28,10 @@ const login = async (req, res) => {
       }
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -57,10 +57,10 @@ const register = async (req, res) => {
       }
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -72,7 +72,8 @@ const getCurrentUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        error: 'User not found'
+        errors: { body: ['User not found'] }
+
       })
     }
 
@@ -87,10 +88,10 @@ const getCurrentUser = async (req, res) => {
       }
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -101,7 +102,7 @@ const updateUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'User not found'
+        errors: { body: ['User not found'] }
       })
     }
 
@@ -131,10 +132,10 @@ const updateUser = async (req, res) => {
       }
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }

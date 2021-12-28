@@ -30,7 +30,7 @@ const createComment = async (req, res) => {
       comment: formatComments(comment, user)
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(422).json({
       errors: { body: [error.message] }
     })
@@ -55,7 +55,7 @@ const getCommentsFromArticle = async (req, res) => {
       comments: formatComments(comments)
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(422).json({
       errors: { body: [error.message] }
     })

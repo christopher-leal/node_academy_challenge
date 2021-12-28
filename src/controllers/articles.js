@@ -46,9 +46,9 @@ const listArticles = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -79,9 +79,9 @@ const createArticle = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -120,9 +120,9 @@ const getFeed = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -137,9 +137,9 @@ const getArticle = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -174,9 +174,9 @@ const updateArticle = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -190,9 +190,9 @@ const deleteArticle = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -211,9 +211,9 @@ const favorite = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
@@ -232,9 +232,9 @@ const unfavorite = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
-      error: error.message
+      errors: { body: [error.message] }
     })
   }
 }
