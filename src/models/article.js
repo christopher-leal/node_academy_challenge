@@ -18,16 +18,7 @@ const Article = sequelize.define('Article', {
   body: {
     type: DataTypes.STRING,
     allowNull: false
-  },
-  favorited: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  favoritesCount: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
   }
-
 })
 
 export default Article
