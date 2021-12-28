@@ -1,13 +1,13 @@
 import { sanitizeTagsName } from './sanitizeTagsName'
 
-const formatArticles = (data, username) => {
+const formatArticles = (data, user) => {
   if (Array.isArray(data)) {
-    return data.map(article => formatArticle(article, username))
+    return data.map(article => formatArticle(article, article.User))
   }
-  return formatArticle(data, username)
+  return formatArticle(data, user)
 }
 
-const formatArticle = (article, username) => ({
+const formatArticle = (article, user) => ({
   slug: article.slug,
   title: article.title,
   description: article.description,
@@ -17,10 +17,10 @@ const formatArticle = (article, username) => ({
   favorited: article.favorited,
   favoritesCount: article.favoritesCount,
   author: {
-    username: article.User.username,
-    bio: article.User.bio,
-    image: article.User.image,
-    following: !!article.User?.followers.find((user) => user.username === username)
+    username: user.username,
+    bio: user.bio,
+    image: user.image,
+    following: !!user?.followers.find((u) => u.username === user.username)
   },
   tagList: sanitizeTagsName(article)
 }
