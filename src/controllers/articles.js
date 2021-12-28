@@ -24,7 +24,7 @@ const listArticles = async (req, res) => {
           where: {
             ...(username && { username })
           },
-          attributes: ['username', 'bio', 'image'],
+
           include: ['followers'],
           required: false
         },
@@ -38,14 +38,14 @@ const listArticles = async (req, res) => {
         }
       ]
     })
-    const articles = formatArticles(rows, req.user?.username)
+    const articles = formatArticles(rows)
     return res.json({
       success: true,
       articles,
       articlesCount: count
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -72,13 +72,13 @@ const createArticle = async (req, res) => {
       }
       await article.addTag(tag)
     }
-    const _article = await Article.findByPk(article.slug, { include: [{ model: User, attributes: ['username', 'bio', 'image'], include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
+    const _article = await Article.findByPk(article.slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
     return res.json({
       success: true,
-      article: formatArticles(_article, req.user?.username)
+      article: formatArticles(_article, _article.User)
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -104,7 +104,6 @@ const getFeed = async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ['username', 'bio', 'image'],
           include: ['followers']
         },
         {
@@ -113,14 +112,14 @@ const getFeed = async (req, res) => {
         }
       ]
     })
-    const articles = formatArticles(rows, req.user?.username)
+    const articles = formatArticles(rows)
     return res.json({
       success: true,
       articles,
       articlesCount: count
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -131,13 +130,13 @@ const getFeed = async (req, res) => {
 const getArticle = async (req, res) => {
   try {
     const { slug } = req.params
-    const article = await Article.findByPk(slug, { include: [{ model: User, attributes: ['username', 'bio', 'image'], include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
+    const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
     return res.json({
       success: true,
-      article: formatArticles(article, req?.user?.username)
+      article: formatArticles(article, article.User)
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -171,10 +170,10 @@ const updateArticle = async (req, res) => {
     const updatedArticle = await article.update(articleToUpdate)
     return res.json({
       success: true,
-      article: formatArticles(updatedArticle, req.user?.username)
+      article: formatArticles(updatedArticle, updatedArticle.User)
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -190,7 +189,7 @@ const deleteArticle = async (req, res) => {
       success: true
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -201,13 +200,17 @@ const deleteArticle = async (req, res) => {
 const favorite = async (req, res) => {
   try {
     const { slug } = req.params
-    const article = await Article.findOne({ where: { slug } })
+    const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
+    const user = await User.findOne({ where: { email: req.user.email }, include: ['followers'] })
+    const favorites = await article.addFavorites(user)
+    article.favorited = true
+    article.favoritesCount = favorites.length
     return res.json({
       success: true,
-      article
+      article: formatArticles(article, user)
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -218,12 +221,17 @@ const favorite = async (req, res) => {
 const unfavorite = async (req, res) => {
   try {
     const { slug } = req.params
-    await Article.destroy({ where: { slug } })
+    const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
+    const user = await User.findOne({ where: { email: req.user.email }, include: ['followers'] })
+    const favorites = await article.removeFavorites(user)
+    article.favorited = false
+    article.favoritesCount = favorites.length
     return res.json({
-      success: true
+      success: true,
+      article: formatArticles(article, user)
     })
   } catch (error) {
-    logger.error(error)
+    logger.error(error.message)
     return res.status(500).json({
       success: false,
       error: error.message
