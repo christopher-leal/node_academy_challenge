@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
 import sequelize from './../db/postgres'
 
-const Tag = sequelize.define('tag', {
+const Tag = sequelize.define('Tag', {
   name: {
     type: DataTypes.STRING,
     unique: true,
