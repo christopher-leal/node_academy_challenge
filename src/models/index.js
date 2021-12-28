@@ -18,5 +18,5 @@ Comment.belongsTo(User, { targetKey: 'username', foreignKey: 'AuthorUsername' })
 
 User.belongsToMany(User, { as: 'followers', through: Followers, sourceKey: 'username', targetKey: 'username', foreignKey: 'following', otherKey: 'follower' })
 
-User.belongsToMany(Article, { through: 'Favorites' })
-Article.belongsToMany(User, { through: 'Favorites' })
+User.belongsToMany(Article, { through: 'Favorites', as: 'favorites' })
+Article.belongsToMany(User, { through: 'Favorites', as: 'favorites' })
