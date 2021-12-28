@@ -7,7 +7,6 @@ import { body } from 'express-validator'
 const router = Router()
 
 router.get('/', [validateOptionalToken], articlesController.listArticles)
-router.get('/feed', [validateToken], articlesController.listArticles)
 router.post('/', [
   validateToken,
   body('article.title').notEmpty().withMessage('Title is required'),
@@ -16,5 +15,7 @@ router.post('/', [
   body('article.tagList').exists().optional().isArray().withMessage('Tag list must be an array'),
   validateFields
 ], articlesController.createArticle)
+router.get('/feed', [validateToken], articlesController.getFeed)
+router.get('/:slug', articlesController.getArticle)
 
 export default router
