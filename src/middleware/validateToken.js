@@ -6,7 +6,9 @@ const validateToken = (req, res, next) => {
   if (!authorizationHeader) {
     return res.status(401).json({
       success: false,
-      error: 'Missing token'
+      errors: {
+        body: ['Missing token']
+      }
     })
   }
   const token = authorizationHeader.replace('Token ', '')
@@ -19,7 +21,9 @@ const validateToken = (req, res, next) => {
     logger.error(err)
     return res.status(401).json({
       success: false,
-      error: err.message
+      errors: {
+        body: [err.message]
+      }
     })
   }
 }
