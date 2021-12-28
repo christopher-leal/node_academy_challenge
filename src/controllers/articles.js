@@ -198,11 +198,46 @@ const deleteArticle = async (req, res) => {
   }
 }
 
+const favorite = async (req, res) => {
+  try {
+    const { slug } = req.params
+    const article = await Article.findOne({ where: { slug } })
+    return res.json({
+      success: true,
+      article
+    })
+  } catch (error) {
+    logger.error(error)
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    })
+  }
+}
+
+const unfavorite = async (req, res) => {
+  try {
+    const { slug } = req.params
+    await Article.destroy({ where: { slug } })
+    return res.json({
+      success: true
+    })
+  } catch (error) {
+    logger.error(error)
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    })
+  }
+}
+
 export default {
   listArticles,
   createArticle,
   getFeed,
   getArticle,
   updateArticle,
-  deleteArticle
+  deleteArticle,
+  favorite,
+  unfavorite
 }

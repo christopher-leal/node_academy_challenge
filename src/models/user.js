@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize'
 import sequelize from './../db/postgres'
-import Followers from './followers'
 
 const User = sequelize.define('User', {
   email: {
@@ -29,7 +28,5 @@ const User = sequelize.define('User', {
   }
 
 })
-
-User.belongsToMany(User, { as: 'followers', through: Followers, sourceKey: 'username', targetKey: 'username', foreignKey: 'following', otherKey: 'follower' })
 
 export default User

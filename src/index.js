@@ -6,6 +6,7 @@ import helmet from 'helmet'
 import logger from './utils/logger'
 import routes from './routes'
 import { connect } from './db/postgres'
+import './models'
 
 dotenv.config()
 

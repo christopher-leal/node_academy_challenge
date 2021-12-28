@@ -1,6 +1,5 @@
 import sequelize from './../db/postgres'
 import { DataTypes } from 'sequelize'
-import User from './user'
 
 const Comment = sequelize.define('Comment', {
   id: {
@@ -14,7 +13,5 @@ const Comment = sequelize.define('Comment', {
     allowNull: false
   }
 })
-
-Comment.belongsTo(User, { targetKey: 'username', foreignKey: 'AuthorUsername' })
 
 export default Comment
