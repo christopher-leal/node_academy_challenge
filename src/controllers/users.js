@@ -99,17 +99,17 @@ const updateUser = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email: req.user.email } })
     if (!user) {
-      return res.status(401).json({
+      return res.status(404).json({
         success: false,
         error: 'User not found'
       })
     }
 
-    const username = req.body.username || user.username
-    const email = req.body.email || user.email
-    const password = req.body.password ? encrypt(req.body.password) : user.password
-    const image = req.body.image || user.image
-    const bio = req.body.bio || user.bio
+    const username = req.body.user.username || user.username
+    const email = req.body.user.email || user.email
+    const password = req.body.user.password ? encrypt(req.body.user.password) : user.password
+    const image = req.body.user.image || user.image
+    const bio = req.body.user.bio || user.bio
 
     const updatedUser = await user.update({
       username,
