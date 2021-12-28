@@ -79,7 +79,6 @@ const createArticle = async (req, res) => {
     })
   } catch (error) {
     logger.error(error)
-    console.log(error)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -139,7 +138,59 @@ const getArticle = async (req, res) => {
     })
   } catch (error) {
     logger.error(error)
-    console.log(error)
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    })
+  }
+}
+
+const updateArticle = async (req, res) => {
+  try {
+    const { slug } = req.params
+    const { title, description, body } = req.body.article
+    const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
+    if (!article) {
+      return res.status(404).json({
+        success: false,
+        error: 'Article not found'
+      })
+    }
+
+    const newTitle = title || article.title
+    const newSlug = slugString(newTitle)
+    const newDescription = description || article.description
+    const newBody = body || article.body
+    const articleToUpdate = {
+      title: newTitle,
+      description: newDescription,
+      body: newBody,
+      ...(title && { slug: newSlug })
+
+    }
+    const updatedArticle = await article.update(articleToUpdate)
+    return res.json({
+      success: true,
+      article: formatArticles(updatedArticle, req.user?.username)
+    })
+  } catch (error) {
+    logger.error(error)
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    })
+  }
+}
+
+const deleteArticle = async (req, res) => {
+  try {
+    const { slug } = req.params
+    await Article.destroy({ where: { slug } })
+    return res.json({
+      success: true
+    })
+  } catch (error) {
+    logger.error(error)
     return res.status(500).json({
       success: false,
       error: error.message
@@ -151,5 +202,7 @@ export default {
   listArticles,
   createArticle,
   getFeed,
-  getArticle
+  getArticle,
+  updateArticle,
+  deleteArticle
 }
