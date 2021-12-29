@@ -4,7 +4,6 @@ import logger from './../utils/logger'
 import Tag from './../models/tag'
 import slugString from './../utils/slug'
 import formatArticles from '../utils/formatArticles'
-import Followers from '../models/followers'
 import { Op } from 'sequelize'
 
 const listArticles = async (req, res) => {
@@ -102,9 +101,9 @@ const createArticle = async (req, res) => {
 const getFeed = async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query
-    const following = await Followers.findAll({ where: { follower: req.user.username } })
-    const where = following.map(follow => ({
-      author: follow.following
+    const users = await User.findAll({ include: [{ association: 'followers', where: { username: req.user.username } }] })
+    const where = users.map(follow => ({
+      author: follow.username
     }))
     const { rows, count } = await Article.findAndCountAll({
       limit: parseInt(limit),
