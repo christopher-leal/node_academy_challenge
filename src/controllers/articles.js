@@ -3,7 +3,7 @@ import Article from './../models/article'
 import logger from './../utils/logger'
 import Tag from './../models/tag'
 import slugString from './../utils/slug'
-import formatArticles from '../utils/formatArticle'
+import formatArticles from '../utils/formatArticles'
 import Followers from '../models/followers'
 import { Op } from 'sequelize'
 
