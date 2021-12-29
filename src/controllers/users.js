@@ -17,6 +17,7 @@ const login = async (req, res) => {
       username: user.username,
       email: user.email
     })
+    logger.info(`User ${email} logged in successfully`)
     return res.json({
       success: true,
       user: {
@@ -29,7 +30,7 @@ const login = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
       errors: { body: [error.message] }
     })
@@ -45,7 +46,7 @@ const register = async (req, res) => {
       username: user.username,
       email: user.email
     })
-
+    logger.info(`User ${email} registered successfully`)
     return res.json({
       success: true,
       user: {
@@ -58,7 +59,7 @@ const register = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
       errors: { body: [error.message] }
     })
@@ -76,7 +77,7 @@ const getCurrentUser = async (req, res) => {
 
       })
     }
-
+    logger.info(`Get current user ${email} successfully`)
     return res.json({
       success: true,
       user: {
@@ -89,7 +90,7 @@ const getCurrentUser = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
       errors: { body: [error.message] }
     })
@@ -105,22 +106,19 @@ const updateUser = async (req, res) => {
         errors: { body: ['User not found'] }
       })
     }
-
     const username = req.body.user.username || user.username
     const email = req.body.user.email || user.email
     const password = req.body.user.password ? encrypt(req.body.user.password) : user.password
     const image = req.body.user.image || user.image
     const bio = req.body.user.bio || user.bio
-
     const updatedUser = await user.update({
       username,
       email,
       password,
       image,
       bio
-
     })
-
+    logger.info(`User ${email} updated successfully`)
     return res.json({
       success: true,
       user: {
@@ -133,7 +131,7 @@ const updateUser = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
       errors: { body: [error.message] }
     })

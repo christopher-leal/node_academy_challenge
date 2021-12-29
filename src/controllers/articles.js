@@ -19,7 +19,7 @@ const listArticles = async (req, res) => {
         })
       }
       const { rows, count } = await Article.findAndCountAll({ distinct: true, include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }, { association: 'favorites', where: { username: user.username } }] })
-
+      logger.info('Articles queried successfully')
       return res.json({
         success: true,
         articles: formatArticles(rows),
@@ -49,6 +49,7 @@ const listArticles = async (req, res) => {
         { association: 'favorites' }
       ]
     })
+    logger.info('Articles queried successfully')
     return res.json({
       success: true,
       articles: formatArticles(rows),
@@ -83,6 +84,7 @@ const createArticle = async (req, res) => {
       await article.addTag(tag)
     }
     const _article = await Article.findByPk(article.slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
+    logger.info('Article created successfully')
     return res.json({
       success: true,
       article: formatArticles(_article, _article.User)
@@ -124,7 +126,7 @@ const getFeed = async (req, res) => {
         { association: 'favorites' }
       ]
     })
-
+    logger.info('Feed queried successfully')
     return res.json({
       success: true,
       articles: formatArticles(rows),
@@ -146,6 +148,7 @@ const getArticle = async (req, res) => {
       include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }, { association: 'favorites' }
       ]
     })
+    logger.info(`Article ${slug} queried successfully`)
     return res.json({
       success: true,
       article: formatArticles(article, article.User)
@@ -185,6 +188,7 @@ const updateArticle = async (req, res) => {
 
     }
     const updatedArticle = await article.update(articleToUpdate)
+    logger.info(`Article ${slug} updated successfully`)
     return res.json({
       success: true,
       article: formatArticles(updatedArticle, updatedArticle.User)
@@ -201,7 +205,23 @@ const updateArticle = async (req, res) => {
 const deleteArticle = async (req, res) => {
   try {
     const { slug } = req.params
-    await Article.destroy({ where: { slug } })
+    const article = await Article.findOne({ where: { slug } })
+    if (!article) {
+      return res.status(404).json({
+        errors: {
+          body: ['Article not found']
+        }
+      })
+    }
+    if (article.author !== req.user.username) {
+      return res.status(403).json({
+        errors: {
+          body: ['You must be the author of the comment']
+        }
+      })
+    }
+    await article.destroy()
+    logger.info(`Article ${slug} deleted successfully`)
     return res.json({
       success: true
     })
@@ -223,6 +243,7 @@ const favorite = async (req, res) => {
     const favorites = await article.getFavorites()
     article.favorited = true
     article.favoritesCount = favorites.length
+    logger.info(`Article ${slug} favorited successfully`)
     return res.json({
       success: true,
       article: formatArticles(article, user)
@@ -243,9 +264,9 @@ const unfavorite = async (req, res) => {
     const user = await User.findOne({ where: { email: req.user.email }, include: ['followers'] })
     await article.removeFavorites(user)
     const favorites = await article.getFavorites()
-
     article.favorited = false
     article.favoritesCount = favorites.length
+    logger.info(`Article ${slug} un favorited successfully`)
     return res.json({
       success: true,
       article: formatArticles(article, user)

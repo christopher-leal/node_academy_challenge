@@ -20,7 +20,8 @@ app.use(helmet())
 app.use('/api', routes)
 
 app.get('/', (req, res) => {
-  res.json({
+  logger.info('Server is online')
+  return res.json({
     success: true,
     message: 'Server online'
   })

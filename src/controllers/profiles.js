@@ -18,6 +18,7 @@ const getProfile = async (req, res) => {
       image: userToFollow.image,
       following
     }
+    logger.info(`Profile queried successfully for user ${username}`)
     return res.json({
       success: true,
       profile
@@ -44,13 +45,13 @@ const follow = async (req, res) => {
     }
     const user = await User.findOne({ where: { email: req.user.email } })
     await userToFollow.addFollowers(user)
-
     const profile = {
       username: userToFollow.username,
       bio: userToFollow.bio,
       image: userToFollow.image,
       following: true
     }
+    logger.info(`Profile ${username} followed successfully`)
     return res.json({
       success: true,
       profile
@@ -75,19 +76,17 @@ const unfollow = async (req, res) => {
       })
     }
     const user = await User.findOne({ where: { email: req.user.email } })
-
     await userToFollow.removeFollowers(user)
-
     const profile = {
       username: userToFollow.username,
       bio: userToFollow.bio,
       image: userToFollow.image,
       following: false
     }
+    logger.info(`Profile ${username} un followed successfully`)
     return res.json({
       success: true,
       profile
-
     })
   } catch (error) {
     logger.error(error.message)

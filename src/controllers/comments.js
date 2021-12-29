@@ -9,7 +9,6 @@ const createComment = async (req, res) => {
   try {
     const { slug } = req.params
     const { body } = req.body.comment
-
     const article = await Article.findOne({ where: { slug } })
     if (!article) {
       return res.status(404).json({
@@ -18,13 +17,13 @@ const createComment = async (req, res) => {
         }
       })
     }
-
     const comment = await Comment.create({
       body,
       AuthorUsername: req.user.username,
       ArticleSlug: slug
     })
     const user = await User.findOne({ where: { email: req.user.email }, include: ['followers'] })
+    logger.info(`Comment created successfully for article ${slug}`)
     return res.json({
       success: true,
       comment: formatComments(comment, user)
@@ -40,7 +39,6 @@ const createComment = async (req, res) => {
 const getCommentsFromArticle = async (req, res) => {
   try {
     const { slug } = req.params
-
     const article = await Article.findOne({ where: { slug } })
     if (!article) {
       return res.status(404).json({
@@ -50,6 +48,7 @@ const getCommentsFromArticle = async (req, res) => {
       })
     }
     const comments = await Comment.findAll({ where: { ArticleSlug: slug }, include: [{ model: User, include: ['followers'] }] })
+    logger.info(`Comment queried successfully for article ${slug}`)
     return res.json({
       success: true,
       comments: formatComments(comments)
@@ -73,7 +72,6 @@ const deleteComment = async (req, res) => {
         }
       })
     }
-
     const comment = await Comment.findByPk(id)
     if (!comment) {
       return res.status(404).json({
@@ -82,7 +80,6 @@ const deleteComment = async (req, res) => {
         }
       })
     }
-
     if (comment.AuthorUsername !== req.user.username) {
       return res.status(403).json({
         errors: {
@@ -90,12 +87,13 @@ const deleteComment = async (req, res) => {
         }
       })
     }
-
-    await Comment.destroy({ where: { id } })
+    await comment.destroy()
+    logger.info(`Comment deleted successfully for article ${slug}`)
     return res.json({
       success: true
     })
   } catch (error) {
+    logger.error(error.message)
     return res.status(422).json({
       errors: { body: [error.message] }
     })
