@@ -12,7 +12,6 @@ router
   .use('/profiles', profilesRouter)
   .use('/articles', articlesRouter)
   .use('/articles', commentsRouter)
-  .use('/articles', commentsRouter)
   .use('/tags', tagsRouter)
 
 export default router
