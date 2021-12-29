@@ -10,12 +10,25 @@ import { Op } from 'sequelize'
 const listArticles = async (req, res) => {
   try {
     const { tag, author: username, favorited, limit = 20, offset = 0 } = req.query
+    if (favorited) {
+      const user = await User.findOne({ where: { username: favorited } })
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          errors: { body: ['User not found'] }
+        })
+      }
+      const { rows, count } = await Article.findAndCountAll({ distinct: true, include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }, { association: 'favorites', where: { username: user.username } }] })
+
+      return res.json({
+        success: true,
+        articles: formatArticles(rows),
+        articlesCount: count
+      })
+    }
     const { rows, count } = await Article.findAndCountAll({
       limit: parseInt(limit),
       offset: parseInt(offset),
-      where: {
-        ...(favorited && { favorited })
-      },
       order: [['createdAt', 'DESC']],
       distinct: true,
       include: [
@@ -24,24 +37,21 @@ const listArticles = async (req, res) => {
           where: {
             ...(username && { username })
           },
-
-          include: ['followers'],
-          required: false
+          include: ['followers']
         },
         {
           model: Tag,
           attributes: ['name'],
           where: {
             ...(tag && { name: tag })
-          },
-          required: false
-        }
+          }
+        },
+        { association: 'favorites' }
       ]
     })
-    const articles = formatArticles(rows)
     return res.json({
       success: true,
-      articles,
+      articles: formatArticles(rows),
       articlesCount: count
     })
   } catch (error) {
@@ -79,6 +89,7 @@ const createArticle = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
+    console.log(error)
     return res.status(422).json({
       success: false,
       errors: { body: [error.message] }
@@ -109,13 +120,14 @@ const getFeed = async (req, res) => {
         {
           model: Tag,
           attributes: ['name']
-        }
+        },
+        { association: 'favorites' }
       ]
     })
-    const articles = formatArticles(rows)
+
     return res.json({
       success: true,
-      articles,
+      articles: formatArticles(rows),
       articlesCount: count
     })
   } catch (error) {
@@ -130,7 +142,10 @@ const getFeed = async (req, res) => {
 const getArticle = async (req, res) => {
   try {
     const { slug } = req.params
-    const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
+    const article = await Article.findByPk(slug, {
+      include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }, { association: 'favorites' }
+      ]
+    })
     return res.json({
       success: true,
       article: formatArticles(article, article.User)
@@ -148,11 +163,13 @@ const updateArticle = async (req, res) => {
   try {
     const { slug } = req.params
     const { title, description, body } = req.body.article
-    const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
+    const article = await Article.findByPk(slug, {
+      include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }, { association: 'favorites' }]
+    })
     if (!article) {
       return res.status(404).json({
         success: false,
-        error: 'Article not found'
+        errors: { body: ['Article not found'] }
       })
     }
 
@@ -202,7 +219,8 @@ const favorite = async (req, res) => {
     const { slug } = req.params
     const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
     const user = await User.findOne({ where: { email: req.user.email }, include: ['followers'] })
-    const favorites = await article.addFavorites(user)
+    await article.addFavorites(user)
+    const favorites = await article.getFavorites()
     article.favorited = true
     article.favoritesCount = favorites.length
     return res.json({
@@ -223,7 +241,9 @@ const unfavorite = async (req, res) => {
     const { slug } = req.params
     const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }] })
     const user = await User.findOne({ where: { email: req.user.email }, include: ['followers'] })
-    const favorites = await article.removeFavorites(user)
+    await article.removeFavorites(user)
+    const favorites = await article.getFavorites()
+
     article.favorited = false
     article.favoritesCount = favorites.length
     return res.json({
