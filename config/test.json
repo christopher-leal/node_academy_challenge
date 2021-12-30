@@ -3,6 +3,6 @@
     "URL":"postgres://{user}:{pass}@{host}:{port}/{db}"
   },
   "redis":{
-    "URL":"redis://{host}:{port}"
+    "URL":"redis://{user}:{pass}@{host}:{port}"
   }
 }
