@@ -1,8 +1,12 @@
 import request from 'supertest'
+import User from '../models/user'
 import app from './../app'
+
+jest.mock('../models/user')
 
 describe('Testing user routes', () => {
   it('POST /api/users should register an user', (done) => {
+    User.create.mockReturnValue({ email: 'chris@chris.com', password: 'password', username: 'chris' })
     request(app)
       .post('/api/users')
       .set('Accept', 'application/json')
