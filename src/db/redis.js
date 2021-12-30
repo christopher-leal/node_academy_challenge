@@ -9,8 +9,8 @@ const url = baseUrl
   .replace('{host}', process.env.REDIS_HOST)
   .replace('{port}', process.env.REDIS_PORT)
 
-const client = createClient(url);
-
+const client = createClient(url)
+console.log(url);
 (async () => {
   client.on('error', (err) => logger.error('Redis Client Error', err))
   await client.connect()
