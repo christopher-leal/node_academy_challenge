@@ -6,7 +6,7 @@ import logger from './../utils/logger'
 const getTags = async (req, res) => {
   try {
     const tags = await Tag.findAll({})
-    logger.info('Tag queried successfully')
+    logger.info('Tags queried successfully')
     return res.json({
       success: true,
       tags: sanitizeTagsName({ Tags: tags })

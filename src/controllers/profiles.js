@@ -25,7 +25,7 @@ const getProfile = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
       errors: { body: [error.message] }
     })
@@ -58,7 +58,7 @@ const follow = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    return res.status(500).json({
+    return res.status(422).json({
       success: false,
       errors: { body: [error.message] }
     })
