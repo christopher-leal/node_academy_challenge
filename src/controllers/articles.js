@@ -233,6 +233,7 @@ const updateArticle = async (req, res) => {
     logger.info(`Article ${slug} updated successfully`)
     await client.hDel('article', JSON.stringify(slug))
     await client.del('articles')
+    await client.hDel('comments', JSON.stringify(slug))
     return res.json({
       success: true,
       article: formatArticles(updatedArticle, updatedArticle.User)
@@ -266,7 +267,9 @@ const deleteArticle = async (req, res) => {
     }
     await article.destroy()
     await client.hDel('article', JSON.stringify(slug))
+    await client.hDel('comments', JSON.stringify(slug))
     await client.del('articles')
+
     logger.info(`Article ${slug} deleted successfully`)
     return res.json({
       success: true
