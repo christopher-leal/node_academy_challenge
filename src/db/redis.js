@@ -8,7 +8,7 @@ const baseUrl = config.get('redis.URL')
 //   .replace('{pass}', process.env.REDIS_PASSWORD)
 //   .replace('{host}', process.env.REDIS_HOST)
 //   .replace('{port}', process.env.REDIS_PORT)
-const url = 'rediss://:p4315cea4aff8616d9105c1646a8b245414750a4f68eca716ae8bcc6c01a96850@ec2-52-206-137-51.compute-1.amazonaws.com:28870'
+const url = 'rediss://:p4315cea4aff8616d9105c1646a8b245414750a4f68eca716ae8bcc6c01a96850@ec2-52-206-137-51.compute-1.amazonaws.com:28869'
 const client = createClient('redis://:p4315cea4aff8616d9105c1646a8b245414750a4f68eca716ae8bcc6c01a96850@ec2-52-206-137-51.compute-1.amazonaws.com:28869')
 console.log(url);
 (async () => {
