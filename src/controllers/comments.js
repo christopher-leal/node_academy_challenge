@@ -4,12 +4,13 @@ import Comment from './../models/comment'
 import Article from './../models/article'
 import User from './../models/user'
 import formatComments from '../utils/formatComments'
+import client from '../db/redis'
 
 const createComment = async (req, res) => {
   try {
     const { slug } = req.params
     const { body } = req.body.comment
-    const article = await Article.findOne({ where: { slug } })
+    const article = await Article.findByPk(slug, { include: [{ model: User, include: ['followers'] }] })
     if (!article) {
       return res.status(404).json({
         errors: {
@@ -22,11 +23,11 @@ const createComment = async (req, res) => {
       AuthorUsername: req.user.username,
       ArticleSlug: slug
     })
-    const user = await User.findOne({ where: { email: req.user.email }, include: ['followers'] })
     logger.info(`Comment created successfully for article ${slug}`)
+    await client.hDel('comments', JSON.stringify(slug))
     return res.json({
       success: true,
-      comment: formatComments(comment, user)
+      comment: formatComments(comment, article.User)
     })
   } catch (error) {
     logger.error(error.message)
@@ -47,8 +48,18 @@ const getCommentsFromArticle = async (req, res) => {
         }
       })
     }
+    const cachedComments = await client.hGet('comments', JSON.stringify(slug))
+    if (cachedComments) {
+      const comments = JSON.parse(cachedComments)
+      logger.info('Comments queried successfully from redis')
+      return res.json({
+        success: true,
+        comments: formatComments(comments)
+      })
+    }
     const comments = await Comment.findAll({ where: { ArticleSlug: slug }, include: [{ model: User, include: ['followers'] }] })
     logger.info(`Comment queried successfully for article ${slug}`)
+    await client.hSet('comments', JSON.stringify(slug), JSON.stringify(comments))
     return res.json({
       success: true,
       comments: formatComments(comments)
@@ -89,6 +100,7 @@ const deleteComment = async (req, res) => {
     }
     await comment.destroy()
     logger.info(`Comment deleted successfully for article ${slug}`)
+    await client.hDel('comments', JSON.stringify(slug))
     return res.json({
       success: true
     })

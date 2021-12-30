@@ -74,7 +74,6 @@ const getCurrentUser = async (req, res) => {
       return res.status(401).json({
         success: false,
         errors: { body: ['User not found'] }
-
       })
     }
     logger.info(`Get current user ${email} successfully`)
