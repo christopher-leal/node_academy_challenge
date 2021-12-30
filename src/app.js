@@ -1,9 +1,11 @@
+import dotenv from 'dotenv'
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import helmet from 'helmet'
 import logger from './utils/logger'
 import routes from './routes'
+dotenv.config()
 
 const app = express()
 
