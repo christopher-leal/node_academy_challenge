@@ -52,15 +52,20 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
     "jest": "^27.4.5",
+    "jsdoc": "^3.6.7",
     "supertest": "^6.1.6"
   },
   "jest": {
     "testEnvironment": "node",
-    "setupFiles": ["dotenv/config"],
+    "setupFiles": [
+      "dotenv/config"
+    ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "<rootDir>/dist/"
     ],
-    "modulePathIgnorePatterns": ["<rootDir>/dist/"]
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ]
   }
 }
