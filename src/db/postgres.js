@@ -13,6 +13,12 @@ const url = baseUrl
 const sequelize = new Sequelize(url, {
   dialect: 'postgres',
   logging: false
+  // dialectOptions: {
+  //   ssl: {
+  //     require: true,
+  //     rejectUnauthorized: false
+  //   }
+  // }
 })
 
 export const connect = async () => {
