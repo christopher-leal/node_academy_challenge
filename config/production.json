@@ -1,0 +1,5 @@
+{
+  "postgres":{
+    "URL":"postgres://{user}:{pass}@{host}:{port}/{db}"
+  }
+}
