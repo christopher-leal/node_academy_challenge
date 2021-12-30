@@ -4,6 +4,7 @@ import Comment from './../models/comment'
 import Article from './../models/article'
 import User from './../models/user'
 import formatComments from '../utils/formatComments'
+import client from '../db/redis'
 
 const createComment = async (req, res) => {
   try {
