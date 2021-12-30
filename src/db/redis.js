@@ -9,7 +9,7 @@ const url = baseUrl
   .replace('{host}', process.env.REDIS_HOST)
   .replace('{port}', process.env.REDIS_PORT)
 
-const client = createClient('redis://redistogo:4464c8ac46bbea1d13ec92763ea6c116@hammerjaw.redistogo.com:10124/')
+const client = createClient(url)
 console.log(url);
 (async () => {
   client.on('error', (err) => logger.error('Redis Client Error', err))
