@@ -11,8 +11,6 @@ const url = baseUrl
   .replace('{db}', process.env.DB_DATABASE)
 
 const sequelize = new Sequelize(url, {
-  host: config.get('postgres.DB_HOST'),
-  port: config.get('postgres.DB_PORT'),
   dialect: 'postgres',
   logging: false
 })
