@@ -18,7 +18,7 @@ app.use('/api', routes)
 
 app.get('/', (req, res) => {
   logger.info('Server is online')
-  return res.json({
+  return res.status(200).json({
     success: true,
     message: 'Server online'
   })
