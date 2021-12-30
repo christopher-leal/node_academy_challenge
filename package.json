@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "clean": "rm -rf node_modules dist && npm i",
-    "build": "npm run clean && npm run build-babel && cp -r ./config dist/",
+    "build": "npm run clean && npm run build-babel && dir && cp -r ./config dist/",
     "build-babel": "babel ./src -d ./dist",
     "dev": "cross-env NODE_ENV=development nodemon --exec ./node_modules/.bin/babel-node src/index.js",
     "start": "cross-env NODE_ENV=production node dist/index.js",
