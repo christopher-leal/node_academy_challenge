@@ -2,6 +2,7 @@ import { createClient } from 'redis'
 import config from 'config'
 import logger from './../utils/logger'
 import url from 'url'
+import { promisify } from 'util'
 // const baseUrl = config.get('redis.URL')
 // const url = baseUrl
 //   .replace('{user}', process.env.REDIS_USER)
@@ -16,17 +17,13 @@ import url from 'url'
 // client.auth(process.env.REDIS_PASSWORD);
 
 const redisURL = new url.URL('redis://default:k7GQcbgFao1MVjc40KvHE4Gh6MtGRvoM@redis-14729.c258.us-east-1-4.ec2.cloud.redislabs.com:14729')
-const client = createClient({
-  host: redisURL.hostname,
-  port: redisURL.port,
-  username: redisURL.username,
-  password: redisURL.password
-
-})
+const client = createClient('redis://default:k7GQcbgFao1MVjc40KvHE4Gh6MtGRvoM@redis-14729.c258.us-east-1-4.ec2.cloud.redislabs.com:14729')
+client.hGet = promisify(client.hget)
+client.hSet = client.hset
 console.log(redisURL)
 export const redisConnection = async () => {
   client.on('error', (err) => logger.error('Redis Client Error', err))
-  await client.connect()
+  console.log(client.connected)
   logger.info('Redis connection has been established successfully.')
 }
 
