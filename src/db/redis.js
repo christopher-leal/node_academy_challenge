@@ -1,8 +1,9 @@
 import { createClient } from 'redis'
 import config from 'config'
 import logger from './../utils/logger'
-import { promisify } from 'util'
 const baseUrl = config.get('redis.URL')
+const { promisify } = require('util')
+
 const url = baseUrl
   .replace('{user}', process.env.REDIS_USER)
   .replace('{pass}', process.env.REDIS_PASSWORD)
@@ -12,11 +13,11 @@ const url = baseUrl
 const client = createClient(url)
 client.hGet = promisify(client.hget)
 client.hSet = client.hset
-client.hDel = client.hdel
-export const redisConnection = async () => {
+client.hDel = client.hdel;
+
+(() => {
   client.on('error', (err) => logger.error('Redis Client Error', err))
-  console.log(client.connected)
   logger.info('Redis connection has been established successfully.')
-}
+})()
 
 export default client
