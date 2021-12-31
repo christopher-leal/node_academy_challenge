@@ -17,11 +17,11 @@ import url from 'url'
 
 const redisURL = new url.URL('redis://default:k7GQcbgFao1MVjc40KvHE4Gh6MtGRvoM@redis-14729.c258.us-east-1-4.ec2.cloud.redislabs.com:14729')
 const client = createClient({
-  host: redisURL.host,
+  host: redisURL.hostname,
   port: redisURL.port,
   username: redisURL.username,
-  password: redisURL.password,
-  readonly: false
+  password: redisURL.password
+
 })
 console.log(redisURL)
 export const redisConnection = async () => {
