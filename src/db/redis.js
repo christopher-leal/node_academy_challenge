@@ -10,7 +10,7 @@ const url = baseUrl
   .replace('{host}', process.env.REDIS_HOST)
   .replace('{port}', process.env.REDIS_PORT)
 
-const client = createClient(url)
+const client = createClient('redis://default:aiCyNqJFz3aCEExVOeg9d4m8XwlmAK6c@redis-12086.c10.us-east-1-2.ec2.cloud.redislabs.com:12086')
 client.hGet = promisify(client.hget)
 client.hSet = client.hset
 client.hDel = client.hdel;
