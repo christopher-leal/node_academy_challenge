@@ -23,11 +23,11 @@ const client = createClient({
   password: redisURL.password,
   readonly: false
 })
-console.log(redisURL);
-(async () => {
+console.log(redisURL)
+export const redisConnection = async () => {
   client.on('error', (err) => logger.error('Redis Client Error', err))
   await client.connect()
   logger.info('Redis connection has been established successfully.')
-})()
+}
 
 export default client
