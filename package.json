@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "clean": "rm -rf node_modules dist && npm i",
+    "clean": "rm -rf node_modules package-lock.json dist && npm i",
     "build": "npm run clean && npm run build-babel && cp -r ./config dist/",
     "build-babel": "babel ./src -d ./dist",
     "dev": "cross-env NODE_ENV=development nodemon --exec ./node_modules/.bin/babel-node -r dotenv/config  src/index.js",
@@ -36,7 +36,7 @@
     "morgan": "^1.10.0",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "redis": "^4.0.1",
+    "redis": "^3.1.2",
     "sequelize": "^6.12.2",
     "slug": "^5.1.1",
     "winston": "^3.3.3"
@@ -69,5 +69,8 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
     ]
+  },
+  "engines": {
+    "node": "14.18.2"
   }
 }
