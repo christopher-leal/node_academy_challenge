@@ -11,12 +11,11 @@ const url = baseUrl
   .replace('{db}', process.env.DB_DATABASE)
 
 const sequelize = new Sequelize(url, {
-  logging: false
 })
 
 export const connect = async () => {
   try {
-    await sequelize.sync({ force: true })
+    await sequelize.authenticate()
     logger.info('DB connection has been established successfully.')
   } catch (error) {
     logger.error('Unable to connect to the database:', error)

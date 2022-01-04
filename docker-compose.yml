@@ -1,13 +1,27 @@
 version: "3"
 
 services:
-  node_app:
+  node:
     restart: always
-    build: .
+    build: ./backend
     ports:
       - "3000:3000"
-    volumes: 
-      - .:/app
+    volumes:
+      - ./backend:/app/backend
+    depends_on:
+      - postgres
+      - redis
+
+  react:
+    restart: always
+    build: ./frontend
+    ports:
+      - "4100:4100"
+    volumes:
+      - ./frontend:/app/frontend
+    depends_on:
+      - node
+
   postgres:
     image: postgres:14.1-alpine
     ports:
