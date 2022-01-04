@@ -1,5 +1,9 @@
 import winston from 'winston'
 
+/**
+ * Instance of winston logger
+ * @type {object}
+ */
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
