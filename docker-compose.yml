@@ -10,7 +10,7 @@ services:
       - postgres
       - redis
     volumes: 
-      - .:/usr/src/app
+      - .:/app
   postgres:
     image: postgres:14.1-alpine
     ports:
