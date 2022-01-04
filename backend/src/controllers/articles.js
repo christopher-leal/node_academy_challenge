@@ -20,7 +20,6 @@ const listArticles = async (req, res) => {
       }
       const cachedArticles = await client.hGet('articles', JSON.stringify({ favorited: user.username }))
       if (cachedArticles) {
-        console.log(cachedArticles)
         const { articles, count } = JSON.parse(cachedArticles)
         logger.info('Articles queried successfully from redis')
         return res.json({
@@ -120,7 +119,6 @@ const createArticle = async (req, res) => {
     })
   } catch (error) {
     logger.error(error.message)
-    console.log(error)
     return res.status(422).json({
       success: false,
       errors: { body: [error.message] }
@@ -185,7 +183,6 @@ const getArticle = async (req, res) => {
     const article = await Article.findByPk(slug, {
       include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }, { association: 'favorites' }]
     })
-    console.log(article)
     logger.info(`Article ${slug} queried successfully`)
     if (article) {
       await client.hSet('article', JSON.stringify(slug), JSON.stringify(article))
@@ -195,7 +192,6 @@ const getArticle = async (req, res) => {
       article: formatArticles(article, article.User)
     })
   } catch (error) {
-    console.log(error)
     logger.error(error.message)
     return res.status(422).json({
       success: false,
