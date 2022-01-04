@@ -4,7 +4,7 @@ import _superagent from 'superagent';
 const superagent = superagentPromise(_superagent, global.Promise);
 
 const API_ROOT = 'https://node-academy-challenge.herokuapp.com/api';
-
+console.log(API_ROOT)
 const encode = encodeURIComponent;
 const responseBody = res => res.body;
 
