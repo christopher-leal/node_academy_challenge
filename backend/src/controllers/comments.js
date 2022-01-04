@@ -59,7 +59,7 @@ const getCommentsFromArticle = async (req, res) => {
     }
     const comments = await Comment.findAll({ where: { ArticleSlug: slug }, include: [{ model: User, include: ['followers'] }] })
     logger.info(`Comment queried successfully for article ${slug}`)
-    await client.hSet('comments', JSON.stringify(slug), JSON.stringify(comments))
+    await client.hSet('comments', JSON.stringify(slug), JSON.stringify(comments), 'EX', 10)
     return res.json({
       success: true,
       comments: formatComments(comments)

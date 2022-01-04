@@ -30,7 +30,7 @@ const listArticles = async (req, res) => {
       }
       const { rows, count } = await Article.findAndCountAll({ distinct: true, include: [{ model: User, include: ['followers'] }, { model: Tag, attributes: ['name'] }, { association: 'favorites', where: { username: user.username } }] })
       logger.info('Articles queried successfully')
-      await client.hSet('articles', JSON.stringify({ favorited: user.username }), JSON.stringify({ articles: rows, count }))
+      await client.hSet('articles', JSON.stringify({ favorited: user.username }), JSON.stringify({ articles: rows, count }), 'EX', 10)
       return res.json({
         success: true,
         articles: formatArticles(rows),
@@ -76,7 +76,7 @@ const listArticles = async (req, res) => {
       ]
     })
     logger.info('Articles queried successfully')
-    await client.hSet('articles', JSON.stringify(whereClause), JSON.stringify({ articles: rows, count }))
+    await client.hSet('articles', JSON.stringify(whereClause), JSON.stringify({ articles: rows, count }), 'EX', 10)
     return res.json({
       success: true,
       articles: formatArticles(rows),
@@ -185,7 +185,7 @@ const getArticle = async (req, res) => {
     })
     logger.info(`Article ${slug} queried successfully`)
     if (article) {
-      await client.hSet('article', JSON.stringify(slug), JSON.stringify(article))
+      await client.hSet('article', JSON.stringify(slug), JSON.stringify(article), 'EX', 10)
     }
     return res.json({
       success: true,
