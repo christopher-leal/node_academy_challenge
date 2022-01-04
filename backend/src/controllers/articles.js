@@ -9,7 +9,7 @@ import client from '../db/redis'
 
 const listArticles = async (req, res) => {
   try {
-    const { tag, author: username, favorited, limit = 20, offset = 0 } = req.query
+    const { tag, author, favorited, limit = 20, offset = 0 } = req.query
     if (favorited) {
       const user = await User.findOne({ where: { username: favorited } })
       if (!user) {
@@ -38,7 +38,7 @@ const listArticles = async (req, res) => {
       })
     }
     const whereClause = {
-      ...(username && { username }),
+      ...(author && { author }),
       ...(tag && { name: tag })
     }
     const cachedArticles = await client.hGet('articles', JSON.stringify(whereClause))
@@ -57,12 +57,12 @@ const listArticles = async (req, res) => {
       offset: parseInt(offset),
       order: [['createdAt', 'DESC']],
       distinct: true,
+      where: {
+        ...(author && { author })
+      },
       include: [
         {
           model: User,
-          where: {
-            ...(username && { username })
-          },
           include: ['followers']
         },
         {
