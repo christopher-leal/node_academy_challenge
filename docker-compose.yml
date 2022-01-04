@@ -2,13 +2,10 @@ version: "3"
 
 services:
   node_app:
-    # restart: always
+    restart: always
     build: .
     ports:
       - "3000:3000"
-    links:
-      - postgres
-      - redis
     volumes: 
       - .:/app
   postgres:
